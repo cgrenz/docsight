@@ -8,6 +8,7 @@
   "type": "analysis",
   "contributes": {
     "routes": "routes.py",
+    "static": "static/",
     "i18n": "i18n/"
   },
   "menu": {

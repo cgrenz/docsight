@@ -10,6 +10,7 @@
     "collector": "collector.py:BnetzWatcherCollector",
     "routes": "routes.py",
     "settings": "templates/bnetz_settings.html",
+    "static": "static/",
     "i18n": "i18n/"
   },
   "config": {

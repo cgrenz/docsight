@@ -10,6 +10,7 @@
     "collector": "collector.py:BQMCollector",
     "routes": "routes.py",
     "settings": "templates/bqm_settings.html",
+    "static": "static/",
     "i18n": "i18n/"
   },
   "config": {
