@@ -232,7 +232,8 @@
     background: var(--card-bg, var(--card));
     border: 1px solid var(--card-border, var(--input-border));
     border-radius: var(--radius-md, 12px);
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     margin-bottom: var(--space-xl, 24px);
 }
 .table-card-header {
