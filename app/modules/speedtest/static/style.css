@@ -1,5 +1,20 @@
 /* Speedtest Tracker — Module Styles */
 
+.st-expand-btn {
+  background: none; border: none; cursor: pointer; padding: 4px;
+  color: var(--text-muted); display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.st-expand-btn:hover { color: var(--text-primary); }
+.st-expand-btn.open { transform: rotate(90deg); color: var(--accent); }
+
+#speedtest-refresh-btn {
+  background: none; border: none; cursor: pointer; padding: 6px;
+  color: var(--text-muted); display: inline-flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-sm); transition: color 0.2s ease, background 0.2s ease;
+}
+#speedtest-refresh-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.06); }
+
 .st-signal-detail {
     background: var(--surface); border-radius: 6px; margin: 4px 8px 8px;
     padding: 10px 14px; font-size: 0.85em;

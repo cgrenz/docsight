@@ -160,7 +160,7 @@ function renderSpeedtestRows() {
         var serverCell = r.server_id
             ? '<td title="' + escapeHtml(r.server_name || '') + '">#' + r.server_id + '</td>'
             : '<td></td>';
-        tr.innerHTML = '<td class="st-expand-col"><button class="st-expand-btn" data-id="' + r.id + '" onclick="toggleSpeedtestSignal(this)">&#9654;</button></td>'
+        tr.innerHTML = '<td class="st-expand-col"><button class="st-expand-btn" data-id="' + r.id + '" onclick="toggleSpeedtestSignal(this)"><i data-lucide="chevron-right"></i></button></td>'
             + '<td>' + escapeHtml(formatSpeedtestTimestamp(r.timestamp)) + '</td>'
             + serverCell
             + '<td><strong' + dlClass + '>' + escapeHtml(r.download_human || (r.download_mbps + ' Mbps')) + '</strong></td>'
@@ -178,6 +178,7 @@ function renderSpeedtestRows() {
             moreWrap.style.display = 'none';
         }
     }
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 function toggleSpeedtestSignal(btn) {
