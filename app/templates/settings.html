@@ -65,13 +65,13 @@
                 <i data-lucide="bell" class="nav-icon"></i>
                 {{ t.get('notifications', 'Notifications') }}
             </button>
-            <button class="nav-item" data-section="appearance" onclick="switchSection('appearance')">
-                <i data-lucide="palette" class="nav-icon"></i>
-                {{ t.appearance }}
-            </button>
             <button class="nav-item" data-section="security" onclick="switchSection('security')">
                 <i data-lucide="shield" class="nav-icon"></i>
                 {{ t.get('security', 'Security') }}
+            </button>
+            <button class="nav-item" data-section="appearance" onclick="switchSection('appearance')">
+                <i data-lucide="palette" class="nav-icon"></i>
+                {{ t.appearance }}
             </button>
             <button class="nav-item" data-section="modules" onclick="switchSection('modules')">
                 <i data-lucide="package" class="nav-icon"></i>
@@ -149,8 +149,8 @@
             {% include 'settings/connection.html' %}
             {% include 'settings/system.html' %}
             {% include 'settings/notifications.html' %}
-            {% include 'settings/appearance.html' %}
             {% include 'settings/security.html' %}
+            {% include 'settings/appearance.html' %}
             {% include 'settings/modules.html' %}
             {% include 'settings/support.html' %}
 
@@ -180,8 +180,8 @@ var SECTION_TITLES = {
     connection: T.step_modem || 'Connection',
     system: T.get ? (T.get('system') || 'System') : 'System',
     notifications: T.get ? (T.get('notifications') || 'Notifications') : 'Notifications',
-    appearance: T.appearance || 'Appearance',
     security: T.get ? (T.get('security') || 'Security') : 'Security',
+    appearance: T.appearance || 'Appearance',
     modules: T.modules_title || 'Module Store',
     support: 'Support DOCSight'
 };
