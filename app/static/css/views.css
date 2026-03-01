@@ -19,14 +19,6 @@
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Collapsible Channel Groups ── */
-details.channel-group {
-    margin-bottom: 8px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-}
 
 /* ══════════════════════════════════════════════════════════════════════════
    TRENDS VIEW - Phase 4.1

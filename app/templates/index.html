@@ -491,9 +491,9 @@
                 <div class="ring-title">{{ t.downstream }}</div>
                 <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:var(--space-xs);">{{ ds_total }} {{ t.channels }}</div>
                 <div class="ring-legend">
-                    <div class="ring-legend-item"><span class="ring-legend-dot" style="background:var(--good);"></span> {{ t.health_good }} <span class="ring-legend-count" style="color:var(--good);">{{ ds_good }}</span></div>
-                    <div class="ring-legend-item"><span class="ring-legend-dot" style="background:var(--warn);"></span> {{ t.health_warning }} <span class="ring-legend-count" style="color:{{ 'var(--warn)' if ds_warn > 0 else 'var(--text-muted)' }};">{{ ds_warn }}</span></div>
-                    <div class="ring-legend-item"><span class="ring-legend-dot" style="background:var(--crit);"></span> {{ t.health_critical }} <span class="ring-legend-count" style="color:{{ 'var(--crit)' if ds_crit > 0 else 'var(--text-muted)' }};">{{ ds_crit }}</span></div>
+                    <div class="ring-legend-item"><span class="ring-legend-dot" style="background:var(--good);"></span> {{ health_labels.good }} <span class="ring-legend-count" style="color:var(--good);">{{ ds_good }}</span></div>
+                    <div class="ring-legend-item"><span class="ring-legend-dot" style="background:var(--warn);"></span> {{ health_labels.warn }} <span class="ring-legend-count" style="color:{{ 'var(--warn)' if ds_warn > 0 else 'var(--text-muted)' }};">{{ ds_warn }}</span></div>
+                    <div class="ring-legend-item"><span class="ring-legend-dot" style="background:var(--crit);"></span> {{ health_labels.crit }} <span class="ring-legend-count" style="color:{{ 'var(--crit)' if ds_crit > 0 else 'var(--text-muted)' }};">{{ ds_crit }}</span></div>
                 </div>
             </div>
         </div>
@@ -511,9 +511,9 @@
                 <div class="ring-title">{{ t.upstream }}</div>
                 <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:var(--space-xs);">{{ us_total }} {{ t.channels }}</div>
                 <div class="ring-legend">
-                    <div class="ring-legend-item"><span class="ring-legend-dot" style="background:var(--good);"></span> {{ t.health_good }} <span class="ring-legend-count" style="color:var(--good);">{{ us_good_c }}</span></div>
-                    <div class="ring-legend-item"><span class="ring-legend-dot" style="background:var(--warn);"></span> {{ t.health_warning }} <span class="ring-legend-count" style="color:{{ 'var(--warn)' if us_warn_c > 0 else 'var(--text-muted)' }};">{{ us_warn_c }}</span></div>
-                    <div class="ring-legend-item"><span class="ring-legend-dot" style="background:var(--crit);"></span> {{ t.health_critical }} <span class="ring-legend-count" style="color:{{ 'var(--crit)' if us_crit_c > 0 else 'var(--text-muted)' }};">{{ us_crit_c }}</span></div>
+                    <div class="ring-legend-item"><span class="ring-legend-dot" style="background:var(--good);"></span> {{ health_labels.good }} <span class="ring-legend-count" style="color:var(--good);">{{ us_good_c }}</span></div>
+                    <div class="ring-legend-item"><span class="ring-legend-dot" style="background:var(--warn);"></span> {{ health_labels.warn }} <span class="ring-legend-count" style="color:{{ 'var(--warn)' if us_warn_c > 0 else 'var(--text-muted)' }};">{{ us_warn_c }}</span></div>
+                    <div class="ring-legend-item"><span class="ring-legend-dot" style="background:var(--crit);"></span> {{ health_labels.crit }} <span class="ring-legend-count" style="color:{{ 'var(--crit)' if us_crit_c > 0 else 'var(--text-muted)' }};">{{ us_crit_c }}</span></div>
                 </div>
             </div>
         </div>
@@ -527,132 +527,111 @@
     {# ══════════════════════════════════════════════════════════════════════════
        DOWNSTREAM CHANNELS — Channel detail tables with collapsible groups
        ══════════════════════════════════════════════════════════════════════════ #}
+    {% set ds_versions = ds|map(attribute='docsis_version')|unique|sort|list %}
     <div class="channels-section glass">
         <div class="channel-header">
             <div>
-                <h2 class="channel-title"><i data-lucide="radio-tower" style="width:16px;height:16px;vertical-align:-2px;margin-right:4px;"></i> {{ t.downstream }}</h2>
-                <div style="font-size:0.72rem;color:var(--text-muted);margin-top:2px;">{{ ds|length }} {{ t.channels }}</div>
+                <div class="channel-title">{{ t.downstream }} {{ t.channels }}</div>
+                <div style="font-size:0.72rem;color:var(--text-muted);margin-top:2px;">{{ ds|length }} {{ t.channels|lower }}{% if ds_versions %} · DOCSIS {{ ds_versions|join(' + ') }}{% endif %}</div>
             </div>
             <div class="channel-health-chips">
-                <span class="health-chip"><span class="dot good"></span> {{ ds_good }} {{ t.health_good }}</span>
-                <span class="health-chip"><span class="dot warn"></span> {{ ds_warn }} {{ t.health_warning }}</span>
-                <span class="health-chip"><span class="dot crit"></span> {{ ds_crit }} {{ t.health_critical }}</span>
+                <span class="health-chip"><span class="dot good"></span> {{ ds_good }} {{ health_labels.good }}</span>
+                <span class="health-chip"><span class="dot warn"></span> {{ ds_warn }} {{ health_labels.warn }}</span>
+                <span class="health-chip"><span class="dot crit"></span> {{ ds_crit }} {{ health_labels.crit }}</span>
             </div>
         </div>
 
         {% for group in ds|groupby('docsis_version')|reverse %}
-        {% set g_crit = group.list|selectattr('health', 'equalto', 'critical')|list|length %}
-        {% set g_warn = group.list|rejectattr('health', 'equalto', 'good')|rejectattr('health', 'equalto', 'critical')|list|length %}
-        <div class="channel-card">
-            <details class="channel-group" open>
-                <summary>
-                    <div class="channel-group-summary">
-                        <span class="channel-group-label">DOCSIS {{ group.grouper }}</span>
-                        <span class="channel-group-count">({{ group.list|length }} {{ t.channel if group.list|length == 1 else t.channels }})</span>
-                        <div class="channel-group-badges">
-                            {% if g_crit %}<span class="badge badge-crit">{{ g_crit }} {{ t.health_critical|lower }}</span>{% endif %}
-                            {% if g_warn %}<span class="badge badge-warn">{{ g_warn }} {{ t.health_warning|lower }}</span>{% endif %}
-                            {% if not g_crit and not g_warn %}<span class="badge badge-good">&#10003;</span>{% endif %}
-                        </div>
-                    </div>
-                </summary>
-                <div class="channel-table-wrapper">
-                    <table class="sortable">
-            <thead><tr>
-                <th>{{ t.status }}</th><th>{{ t.channel }}</th><th>{{ t.frequency }}</th><th>{{ t.power_dbmv }}</th>
-                <th>{{ t.snr_db }}</th><th>{{ t.modulation }}</th><th>{{ t.corr }}</th><th>{{ t.uncorr }}</th>
-            </tr></thead>
-            <tbody>
-            {% for ch in group.list %}
-            <tr>
-                {% set ch_tips = {"power critical": t.ch_power_critical, "power warning": t.ch_power_warning, "snr critical": t.ch_snr_critical, "snr warning": t.ch_snr_warning} %}
-                {% set ch_tip_parts = [] %}
-                {% for key, label in ch_tips.items() %}{% if key in ch.health_detail %}{% if ch_tip_parts.append(label) %}{% endif %}{% endif %}{% endfor %}
-                <td data-sort="{{ 0 if ch.health == 'good' else (2 if ch.health == 'critical' else 1) }}">
-                    {% if ch.health == "good" %}<span class="badge badge-good">{{ t.health_good }}</span>
-                    {% elif ch.health == "critical" %}<span class="badge badge-crit" title="{{ ch_tip_parts|join(', ') }}">{{ t.health_critical }}</span>
-                    {% else %}<span class="badge badge-warn" title="{{ ch_tip_parts|join(', ') }}">{{ t.health_warning }}</span>{% endif %}
-                </td>
-                <td data-sort="{{ ch.channel_id }}">{{ ch.channel_id }}</td>
-                <td>{{ ch.frequency }}</td>
-                <td data-sort="{{ ch.power if ch.power is not none else 0 }}" class="{% if ch.power is not none %}{% if 'power critical' in ch.health_detail %}val-crit{% elif 'power warning' in ch.health_detail %}val-warn{% else %}val-good{% endif %}{% endif %}">{{ ch.power if ch.power is not none else "—" }}</td>
-                <td data-sort="{{ ch.snr if ch.snr is not none else 0 }}" class="{% if ch.snr is not none %}{% if 'snr critical' in ch.health_detail %}val-crit{% elif 'snr warning' in ch.health_detail %}val-warn{% else %}val-good{% endif %}{% endif %}">{{ ch.snr if ch.snr is not none else "-" }}</td>
-                <td>{{ ch.modulation }}</td>
-                <td data-sort="{{ ch.correctable_errors }}">{{ ch.correctable_errors|fmt_k }}</td>
-                <td data-sort="{{ ch.uncorrectable_errors }}">{{ ch.uncorrectable_errors|fmt_k }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
+        <div class="docsis-group">
+            <div class="docsis-group-header" onclick="this.parentElement.classList.toggle('open')">
+                <i data-lucide="chevron-right"></i>
+                DOCSIS {{ group.grouper }} {{ 'OFDM' if group.grouper == '3.1' else 'SC-QAM' }} · {{ group.list|length }} {{ t.channel if group.list|length == 1 else t.channels }}
+            </div>
+            <div class="table-scroll-wrapper">
+                <div class="table-scroll">
+                    <table class="channel-table">
+                        <thead><tr>
+                            <th>Ch</th><th>{{ t.frequency }}</th><th>Power</th>
+                            <th>SNR</th><th>Mod.</th><th>Health</th>
+                        </tr></thead>
+                        <tbody>
+                        {% for ch in group.list %}
+                        {% set ch_tips = {"power critical": t.ch_power_critical, "power warning": t.ch_power_warning, "snr critical": t.ch_snr_critical, "snr warning": t.ch_snr_warning} %}
+                        {% set ch_tip_parts = [] %}
+                        {% for key, label in ch_tips.items() %}{% if key in ch.health_detail %}{% if ch_tip_parts.append(label) %}{% endif %}{% endif %}{% endfor %}
+                        <tr>
+                            <td>{{ ch.channel_id }}</td>
+                            <td>{{ ch.frequency }}{% if ch.frequency and 'MHz' not in ch.frequency|string %} MHz{% endif %}</td>
+                            <td class="{% if ch.power is not none %}{% if 'power critical' in ch.health_detail %}val-crit{% elif 'power warning' in ch.health_detail %}val-warn{% else %}val-good{% endif %}{% endif %}">{{ ch.power if ch.power is not none else "—" }}{% if ch.power is not none %} dBmV{% endif %}</td>
+                            <td class="{% if ch.snr is not none %}{% if 'snr critical' in ch.health_detail %}val-crit{% elif 'snr warning' in ch.health_detail %}val-warn{% else %}val-good{% endif %}{% endif %}">{{ ch.snr if ch.snr is not none else "—" }}{% if ch.snr is not none %} dB{% endif %}</td>
+                            <td>{{ ch.modulation }}</td>
+                            <td>
+                                {% if ch.health == "good" %}<span class="badge badge-good">{{ health_labels.good }}</span>
+                                {% elif ch.health == "critical" %}<span class="badge badge-crit" title="{{ ch_tip_parts|join(', ') }}">{{ health_labels.crit }}</span>
+                                {% else %}<span class="badge badge-warn" title="{{ ch_tip_parts|join(', ') }}">{{ health_labels.warn }}</span>{% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
                     </table>
                 </div>
-            </details>
+            </div>
         </div>
         {% endfor %}
     </div>
 
     {# ══════════════════════════════════════════════════════════════════════════
-       UPSTREAM CHANNELS - Phase 3 Task 3.5
-       Modern card containers for channel tables
+       UPSTREAM CHANNELS — Channel detail tables with collapsible groups
        ══════════════════════════════════════════════════════════════════════════ #}
+    {% set us_versions = us|map(attribute='docsis_version')|unique|sort|list %}
     <div class="channels-section glass">
         <div class="channel-header">
             <div>
-                <h2 class="channel-title"><i data-lucide="radio-tower" style="width:16px;height:16px;vertical-align:-2px;margin-right:4px;"></i> {{ t.upstream }}</h2>
-                <div style="font-size:0.72rem;color:var(--text-muted);margin-top:2px;">{{ us|length }} {{ t.channels }}</div>
+                <div class="channel-title">{{ t.upstream }} {{ t.channels }}</div>
+                <div style="font-size:0.72rem;color:var(--text-muted);margin-top:2px;">{{ us|length }} {{ t.channels|lower }}{% if us_versions %} · DOCSIS {{ us_versions|join(' + ') }}{% endif %}</div>
             </div>
             <div class="channel-health-chips">
-                <span class="health-chip"><span class="dot good"></span> {{ us_good_c }} {{ t.health_good }}</span>
-                <span class="health-chip"><span class="dot warn"></span> {{ us_warn_c }} {{ t.health_warning }}</span>
-                <span class="health-chip"><span class="dot crit"></span> {{ us_crit_c }} {{ t.health_critical }}</span>
+                <span class="health-chip"><span class="dot good"></span> {{ us_good_c }} {{ health_labels.good }}</span>
+                <span class="health-chip"><span class="dot warn"></span> {{ us_warn_c }} {{ health_labels.warn }}</span>
+                <span class="health-chip"><span class="dot crit"></span> {{ us_crit_c }} {{ health_labels.crit }}</span>
             </div>
         </div>
 
         {% for group in us|groupby('docsis_version')|reverse %}
-        {% set g_crit = group.list|selectattr('health', 'equalto', 'critical')|list|length %}
-        {% set g_warn = group.list|rejectattr('health', 'equalto', 'good')|rejectattr('health', 'equalto', 'critical')|list|length %}
-        <div class="channel-card">
-            <details class="channel-group" open>
-                <summary>
-                    <div class="channel-group-summary">
-                        <span class="channel-group-label">DOCSIS {{ group.grouper }}</span>
-                        <span class="channel-group-count">({{ group.list|length }} {{ t.channel if group.list|length == 1 else t.channels }})</span>
-                        <div class="channel-group-badges">
-                            {% if g_crit %}<span class="badge badge-crit">{{ g_crit }} {{ t.health_critical|lower }}</span>{% endif %}
-                            {% if g_warn %}<span class="badge badge-warn">{{ g_warn }} {{ t.health_warning|lower }}</span>{% endif %}
-                            {% if not g_crit and not g_warn %}<span class="badge badge-good">&#10003;</span>{% endif %}
-                        </div>
-                    </div>
-                </summary>
-                <div class="channel-table-wrapper">
-                    <table class="sortable">
-            <thead><tr>
-                <th>{{ t.status }}</th><th>{{ t.channel }}</th><th>{{ t.frequency }}</th><th>{{ t.power_dbmv }}</th>
-                <th>{{ t.modulation }}</th><th>{{ t.bitrate or 'Bitrate' }}</th><th>{{ t.multiplex }}</th>
-            </tr></thead>
-            <tbody>
-            {% for ch in group.list %}
-            {% set ch_tips = [] %}
-            {% if 'power critical low' in ch.health_detail %}{% set _ = ch_tips.append(t.ch_power_critical_low) %}{% elif 'power critical high' in ch.health_detail %}{% set _ = ch_tips.append(t.ch_power_critical_high) %}{% elif 'power warning low' in ch.health_detail %}{% set _ = ch_tips.append(t.ch_power_warning_low) %}{% elif 'power warning high' in ch.health_detail %}{% set _ = ch_tips.append(t.ch_power_warning_high) %}{% endif %}
-            {% if 'modulation critical' in ch.health_detail %}{% set _ = ch_tips.append(t.ch_modulation_critical) %}{% elif 'modulation warning' in ch.health_detail %}{% set _ = ch_tips.append(t.ch_modulation_warning) %}{% endif %}
-            {% set ch_tip = ch_tips|join(', ') %}
-            <tr>
-                <td data-sort="{{ 0 if ch.health == 'good' else (2 if ch.health == 'critical' else 1) }}">
-                    {% if ch.health == "good" %}<span class="badge badge-good">{{ t.health_good }}</span>
-                    {% elif ch.health == "critical" %}<span class="badge badge-crit" title="{{ ch_tip }}">{{ t.health_critical }}</span>
-                    {% else %}<span class="badge badge-warn" title="{{ ch_tip }}">{{ t.health_warning }}</span>{% endif %}
-                </td>
-                <td data-sort="{{ ch.channel_id }}">{{ ch.channel_id }}</td>
-                <td>{{ ch.frequency }}</td>
-                <td data-sort="{{ ch.power if ch.power is not none else 0 }}" class="{% if ch.power is not none %}{% if 'power critical' in ch.health_detail %}val-crit{% elif 'power warning' in ch.health_detail %}val-warn{% else %}val-good{% endif %}{% endif %}">{{ ch.power if ch.power is not none else "—" }}</td>
-                <td class="{% if 'modulation critical' in ch.health_detail %}val-crit{% elif 'modulation warning' in ch.health_detail %}val-warn{% else %}val-good{% endif %}">{{ ch.modulation }}</td>
-                <td class="{% if 'modulation critical' in ch.health_detail %}val-crit{% elif 'modulation warning' in ch.health_detail %}val-warn{% endif %}">{% if ch.theoretical_bitrate %}{{ ch.theoretical_bitrate }} Mbit/s{% else %}—{% endif %}</td>
-                <td>{{ ch.multiplex }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
+        <div class="docsis-group">
+            <div class="docsis-group-header" onclick="this.parentElement.classList.toggle('open')">
+                <i data-lucide="chevron-right"></i>
+                DOCSIS {{ group.grouper }} {{ 'OFDMA' if group.grouper == '3.1' else 'SC-QAM' }} · {{ group.list|length }} {{ t.channel if group.list|length == 1 else t.channels }}
+            </div>
+            <div class="table-scroll-wrapper">
+                <div class="table-scroll">
+                    <table class="channel-table">
+                        <thead><tr>
+                            <th>Ch</th><th>{{ t.frequency }}</th><th>Power</th>
+                            <th>Mod.</th><th>Health</th>
+                        </tr></thead>
+                        <tbody>
+                        {% for ch in group.list %}
+                        {% set ch_tips = [] %}
+                        {% if 'power critical low' in ch.health_detail %}{% set _ = ch_tips.append(t.ch_power_critical_low) %}{% elif 'power critical high' in ch.health_detail %}{% set _ = ch_tips.append(t.ch_power_critical_high) %}{% elif 'power warning low' in ch.health_detail %}{% set _ = ch_tips.append(t.ch_power_warning_low) %}{% elif 'power warning high' in ch.health_detail %}{% set _ = ch_tips.append(t.ch_power_warning_high) %}{% endif %}
+                        {% if 'modulation critical' in ch.health_detail %}{% set _ = ch_tips.append(t.ch_modulation_critical) %}{% elif 'modulation warning' in ch.health_detail %}{% set _ = ch_tips.append(t.ch_modulation_warning) %}{% endif %}
+                        {% set ch_tip = ch_tips|join(', ') %}
+                        <tr>
+                            <td>{{ ch.channel_id }}</td>
+                            <td>{{ ch.frequency }}{% if ch.frequency and 'MHz' not in ch.frequency|string %} MHz{% endif %}</td>
+                            <td class="{% if ch.power is not none %}{% if 'power critical' in ch.health_detail %}val-crit{% elif 'power warning' in ch.health_detail %}val-warn{% else %}val-good{% endif %}{% endif %}">{{ ch.power if ch.power is not none else "—" }}{% if ch.power is not none %} dBmV{% endif %}</td>
+                            <td>{{ ch.modulation }}</td>
+                            <td>
+                                {% if ch.health == "good" %}<span class="badge badge-good">{{ health_labels.good }}</span>
+                                {% elif ch.health == "critical" %}<span class="badge badge-crit" title="{{ ch_tip }}">{{ health_labels.crit }}</span>
+                                {% else %}<span class="badge badge-warn" title="{{ ch_tip }}">{{ health_labels.warn }}</span>{% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
                     </table>
                 </div>
-            </details>
+            </div>
         </div>
         {% endfor %}
     </div>
@@ -1898,83 +1877,54 @@
     window.donutCharts = window.donutCharts || {};
     
     function renderDonut(canvasId) {
-        const ctx = document.getElementById(canvasId);
-        if (!ctx) {
-            console.warn('[ChannelHealth] Canvas element #' + canvasId + ' not found');
-            return;
-        }
-        
-        // Read health counts from data-attributes (updated on refresh)
-        const container = ctx.parentElement;
-        if (!container) {
-            console.warn('[ChannelHealth] Container not found for #' + canvasId);
-            return;
-        }
-        
-        const counts = {
-            good: parseInt(container.getAttribute('data-good') || '0', 10),
-            warn: parseInt(container.getAttribute('data-warn') || '0', 10),
-            crit: parseInt(container.getAttribute('data-crit') || '0', 10)
-        };
-        
-        // Destroy existing chart instance to prevent rendering issues
-        if (window.donutCharts[canvasId]) {
-            window.donutCharts[canvasId].destroy();
-            delete window.donutCharts[canvasId];
-        }
-        
-        const total = counts.good + counts.warn + counts.crit;
-        if (total === 0) {
-            console.warn('[ChannelHealth] No data for ' + canvasId);
-            return;
-        }
-        
-        var isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-        window.donutCharts[canvasId] = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Good', 'Warning', 'Critical'],
-                datasets: [{
-                    data: [counts.good, counts.warn, counts.crit],
-                    backgroundColor: [
-                        'rgba(76, 175, 80, 0.8)',
-                        'rgba(255, 152, 0, 0.8)',
-                        'rgba(244, 67, 54, 0.8)'
-                    ],
-                    borderColor: [
-                        'rgba(76, 175, 80, 1)',
-                        'rgba(255, 152, 0, 1)',
-                        'rgba(244, 67, 54, 1)'
-                    ],
-                    borderWidth: 2,
-                    hoverOffset: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                cutout: '65%',
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: isDark ? 'rgba(15,20,25,0.95)' : 'rgba(255,255,255,0.95)',
-                        titleColor: isDark ? 'rgba(224,224,224,0.9)' : 'rgba(30,30,30,0.9)',
-                        bodyColor: isDark ? 'rgba(224,224,224,0.8)' : 'rgba(30,30,30,0.8)',
-                        borderColor: isDark ? 'rgba(168,85,247,0.3)' : 'rgba(168,85,247,0.4)',
-                        borderWidth: 1,
-                        padding: 12,
-                        displayColors: true,
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.label || '';
-                                const value = context.parsed || 0;
-                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-                                return label + ': ' + value + ' (' + percentage + '%)';
-                            }
-                        }
-                    }
-                }
-            }
+        var c = document.getElementById(canvasId);
+        if (!c) return;
+        var container = c.parentElement;
+        if (!container) return;
+
+        var good = parseInt(container.getAttribute('data-good') || '0', 10);
+        var warn = parseInt(container.getAttribute('data-warn') || '0', 10);
+        var crit = parseInt(container.getAttribute('data-crit') || '0', 10);
+        var total = good + warn + crit;
+        if (total === 0) return;
+
+        // Match mockup: raw Canvas arcs with thin stroke
+        var dpr = window.devicePixelRatio || 1;
+        var size = c.parentElement.offsetWidth || 80;
+        c.width = size * dpr;
+        c.height = size * dpr;
+        c.style.width = size + 'px';
+        c.style.height = size + 'px';
+        var x = c.getContext('2d');
+        x.scale(dpr, dpr);
+
+        var cx = size / 2, cy = size / 2, r = size * 0.38, lw = size * 0.08;
+        var styles = getComputedStyle(document.documentElement);
+        var segments = [
+            { val: good, color: styles.getPropertyValue('--good').trim() },
+            { val: warn, color: styles.getPropertyValue('--warn').trim() },
+            { val: crit, color: styles.getPropertyValue('--crit').trim() }
+        ];
+
+        // Background ring
+        x.beginPath();
+        x.arc(cx, cy, r, 0, Math.PI * 2);
+        x.strokeStyle = 'rgba(255,255,255,0.06)';
+        x.lineWidth = lw;
+        x.stroke();
+
+        // Colored segments
+        var angle = -Math.PI / 2;
+        segments.forEach(function(s) {
+            if (s.val === 0) return;
+            var sweep = (s.val / total) * Math.PI * 2;
+            x.beginPath();
+            x.arc(cx, cy, r, angle, angle + sweep);
+            x.strokeStyle = s.color;
+            x.lineWidth = lw;
+            x.lineCap = 'round';
+            x.stroke();
+            angle += sweep;
         });
     }
     
