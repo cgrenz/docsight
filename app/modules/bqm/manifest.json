@@ -3,7 +3,7 @@
   "name": "ThinkBroadband BQM",
   "description": "Broadband Quality Monitor graph collection from ThinkBroadband",
   "version": "1.0.0",
-  "author": "DOCSight",
+  "author": "itsDNNS",
   "minAppVersion": "2026.2",
   "type": "integration",
   "contributes": {
