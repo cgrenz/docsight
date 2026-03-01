@@ -1,9 +1,19 @@
-var CACHE_NAME = 'docsight-v1';
+var CACHE_NAME = 'docsight-v2';
 var SHELL_URLS = [
   '/',
+  '/static/css/fonts.css',
   '/static/css/tokens.css',
   '/static/css/components.css',
   '/static/css/main.css',
+  '/static/css/views.css',
+  '/static/css/modals.css',
+  '/static/vendor/lucide.min.js',
+  '/static/vendor/chart.umd.min.js',
+  '/static/vendor/chartjs-adapter-date-fns.bundle.min.js',
+  '/static/fonts/outfit-latin.woff2',
+  '/static/fonts/outfit-latin-ext.woff2',
+  '/static/fonts/jetbrains-mono-latin.woff2',
+  '/static/fonts/jetbrains-mono-latin-ext.woff2',
   '/static/logo.svg',
   '/static/icon.png'
 ];
