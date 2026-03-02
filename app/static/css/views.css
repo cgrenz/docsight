@@ -418,13 +418,11 @@
     .events-severity-pills {
         width: 100%;
         justify-content: center;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+        flex-wrap: wrap;
     }
     .severity-pill {
-        padding: 8px 16px;
-        font-size: 0.8em;
-        flex-shrink: 0;
+        padding: 6px 12px;
+        font-size: 0.75em;
     }
     .table-card-header {
         flex-direction: column;
