@@ -128,3 +128,12 @@ class EventMixin:
                 "DELETE FROM events WHERE timestamp < ?", (cutoff,)
             ).rowcount
         return deleted
+
+    def get_latest_spike_timestamp(self):
+        """Return timestamp of the most recent error_spike event, or None."""
+        with sqlite3.connect(self.db_path) as conn:
+            row = conn.execute(
+                "SELECT timestamp FROM events WHERE event_type = 'error_spike' "
+                "ORDER BY timestamp DESC LIMIT 1"
+            ).fetchone()
+        return row[0] if row else None

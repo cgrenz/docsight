@@ -146,6 +146,23 @@ class TestEventStorage:
     def test_save_events_empty_list(self, storage):
         assert storage.save_events([]) == 0
 
+    def test_get_latest_spike_timestamp_empty(self, storage):
+        """No spike events — returns None."""
+        assert storage.get_latest_spike_timestamp() is None
+
+    def test_get_latest_spike_timestamp(self, storage):
+        """Returns timestamp of most recent error_spike event."""
+        storage.save_event("2026-02-26T10:00:00Z", "warning", "power_change", "Power shifted")
+        storage.save_event("2026-02-27T14:00:00Z", "warning", "error_spike", "Uncorr spike")
+        storage.save_event("2026-02-27T16:00:00Z", "warning", "error_spike", "Uncorr spike 2")
+        result = storage.get_latest_spike_timestamp()
+        assert result == "2026-02-27T16:00:00Z"
+
+    def test_get_latest_spike_ignores_other_types(self, storage):
+        """Only considers error_spike events."""
+        storage.save_event("2026-02-28T12:00:00Z", "warning", "power_change", "Power shifted")
+        assert storage.get_latest_spike_timestamp() is None
+
 
 # ── EventDetector Tests ──
 
