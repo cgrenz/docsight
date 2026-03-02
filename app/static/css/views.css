@@ -436,6 +436,20 @@
         padding: 8px 12px;
         font-size: 0.8em;
     }
+    /* Hide Type column on mobile — severity badge + message give enough context */
+    #events-table thead th:nth-child(3),
+    #events-table tbody td:nth-child(3) {
+        display: none;
+    }
+    /* Allow timestamp to wrap on mobile (date on one line, time below) */
+    #events-table tbody td:first-child {
+        white-space: normal !important;
+        min-width: 70px;
+        max-width: 90px;
+    }
+    #events-table td.event-msg {
+        max-width: 45vw;
+    }
 }
 
 
