@@ -40,7 +40,7 @@ function formatEventMessage(ev) {
     switch (ev.event_type) {
         case 'health_change':
             return _healthDot(d.prev) +
-                '<span class="ev-arrow">\u2192</span>' +
+                '<i data-lucide="arrow-right" class="ev-arrow-icon"></i>' +
                 _healthDot(d.current);
 
         case 'power_change': {
@@ -49,7 +49,7 @@ function formatEventMessage(ev) {
             var sign = delta >= 0 ? '+' : '';
             return '<span class="ev-label">' + escapeHtml(dir) + ' Power</span>' +
                 '<span class="ev-val">' + _fmtNum(d.prev) + '</span>' +
-                '<span class="ev-arrow">\u2192</span>' +
+                '<i data-lucide="arrow-right" class="ev-arrow-icon"></i>' +
                 '<span class="ev-val">' + _fmtNum(d.current) + '</span> dBmV ' +
                 '<span class="ev-warn">' + (delta >= 0 ? '\u25B2' : '\u25BC') + ' ' + sign + _fmtNum(delta) + '</span>';
         }
@@ -58,7 +58,7 @@ function formatEventMessage(ev) {
             var thr = d.threshold === 'critical' ? 'ev-down' : 'ev-warn';
             return '<span class="ev-label">DS SNR</span>' +
                 '<span class="ev-val">' + _fmtNum(d.prev) + '</span>' +
-                '<span class="ev-arrow">\u2192</span>' +
+                '<i data-lucide="arrow-right" class="ev-arrow-icon"></i>' +
                 '<span class="ev-val ' + thr + '">' + _fmtNum(d.current) + '</span> dB ' +
                 '<span class="ev-muted">(' + escapeHtml(d.threshold) + ')</span>';
         }
@@ -70,7 +70,7 @@ function formatEventMessage(ev) {
             var chSign = chDelta >= 0 ? '+' : '';
             return '<span class="ev-label">' + escapeHtml(chDir) + ' Channels</span>' +
                 '<span class="ev-val">' + _fmtNum(d.prev) + '</span>' +
-                '<span class="ev-arrow">\u2192</span>' +
+                '<i data-lucide="arrow-right" class="ev-arrow-icon"></i>' +
                 '<span class="ev-val">' + _fmtNum(d.current) + '</span> ' +
                 '<span class="' + chCls + '">' + (chDelta < 0 ? '\u25BC' : '\u25B2') + ' ' + chSign + chDelta + '</span>';
         }
@@ -86,7 +86,7 @@ function formatEventMessage(ev) {
                 html += '<span class="ev-sub">' +
                     escapeHtml(c.direction) + ' Ch ' + escapeHtml(String(c.channel)) + ': ' +
                     '<span class="ev-val">' + escapeHtml(c.prev) + '</span>' +
-                    '<span class="ev-arrow">\u2192</span>' +
+                    '<i data-lucide="arrow-right" class="ev-arrow-icon"></i>' +
                     '<span class="ev-val">' + escapeHtml(c.current) + '</span> ' +
                     '<span class="' + cls + '">' + arrow + ' ' + ranks + ' rank' + (ranks !== 1 ? 's' : '') + '</span>' +
                     '</span>';
@@ -200,6 +200,7 @@ function loadEvents(append) {
             });
             tableCard.style.display = '';
             moreBtn.style.display = events.length >= _eventsPageSize ? '' : 'none';
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         })
         .catch(function() {
             loading.style.display = 'none';

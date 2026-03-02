@@ -297,14 +297,14 @@
 }
 
 /* Event message formatting */
-.ev-val { font-family: var(--font-mono, monospace); font-weight: 600; }
-.ev-arrow { margin: 0 4px; color: var(--muted); }
+.ev-val { font-family: var(--font-mono, monospace); font-weight: 600; white-space: nowrap; display: inline-block; }
+.ev-arrow-icon { display: inline-block; width: 14px; height: 14px; margin: 0 4px; vertical-align: middle; color: var(--muted); }
 .ev-up { color: var(--color-ok, #22c55e); }
 .ev-down { color: var(--color-crit, #ef4444); }
 .ev-warn { color: var(--color-warn, #f59e0b); }
 .ev-muted { color: var(--muted); font-size: 0.9em; }
 .ev-sub { display: block; margin-top: 2px; padding-left: 12px; font-size: 0.9em; color: var(--muted); }
-.ev-label { color: var(--text-secondary, var(--muted)); margin-right: 6px; }
+.ev-label { color: var(--text-secondary, var(--muted)); margin-right: 6px; white-space: nowrap; display: inline-block; }
 .health-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; vertical-align: middle; margin-right: 4px; }
 .health-dot.good { background: var(--color-ok, #22c55e); }
 .health-dot.marginal { background: var(--color-warn, #f59e0b); }

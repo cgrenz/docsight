@@ -2128,7 +2128,7 @@ var T = {{ t|tojson }};
             if (typeof loadIncidents === 'function') loadIncidents();
             if (typeof loadJournal === 'function') loadJournal();
         } else if (view === 'events') {
-            loadEvents();
+            if (typeof loadEvents === 'function') loadEvents();
         } else if (view === 'channels') {
             if (typeof loadChannelList === 'function') loadChannelList();
             var mode = getPillValue('channel-mode-tabs') || 'timeline';
@@ -2323,11 +2323,9 @@ var T = {{ t|tojson }};
     /* Smokeping Graphs → integrations.js */
 
     /* ── Init ── */
-    // Apply hash-based view routing (must be inside IIFE to access switchView)
+    // Store initial hash for deferred routing (after external scripts load)
     var _initHash = viewFromHash();
-    if (_initHash && _initHash !== 'live') {
-        switchView(_initHash, true);
-    }
+    window._pendingView = (_initHash && _initHash !== 'live') ? _initHash : null;
 
 
     /* ── Incident Journal, Incidents, Timeline, Import, Bulk, Search → journal.js ── */
@@ -2358,6 +2356,11 @@ var T = {{ t|tojson }};
 <script src="/static/js/correlation.js"></script>
 
 <script>
+  // Apply deferred hash-based view routing (all external scripts are now loaded)
+  if (window._pendingView) {
+    window.switchView(window._pendingView, true);
+    delete window._pendingView;
+  }
   // Initialize Lucide icons after DOM is ready
   document.addEventListener('DOMContentLoaded', function() {
     lucide.createIcons();
