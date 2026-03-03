@@ -322,7 +322,7 @@ Scan watch_dir for new .pdf/.csv files (not in .imported marker)
 **Related files:**
 - `app/bnetz_parser.py` - PDF parser for official BNetzA Messprotokolle
 - `app/bnetz_csv_parser.py` - CSV parser for BNetzA Desktop App exports
-- `docker-compose.bnetz.yml` - Sidecar compose for automated measurements
+- See wiki [Example Compose Stacks](https://github.com/itsDNNS/docsight/wiki/Example-Compose-Stacks) for sidecar examples
 
 ### BackupCollector (`app/collectors/backup.py`)
 

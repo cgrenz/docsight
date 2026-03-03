@@ -33,5 +33,5 @@
   "bnetz_source_watcher": "Importado automaticamente",
   "bnetz_source_csv": "Importacion CSV",
   "bnetz_upload_csv_hint": "Subir archivos de medicion PDF o CSV",
-  "bnetz_docker_hint": "Use docker-compose.bnetz.yml para medicion automatizada con la app oficial BNetzA"
+  "bnetz_docker_hint": "Consulta la wiki para un ejemplo de Docker Compose con la app oficial BNetzA como sidecar"
 }

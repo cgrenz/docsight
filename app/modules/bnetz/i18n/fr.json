@@ -33,5 +33,5 @@
   "bnetz_source_watcher": "Importe automatiquement",
   "bnetz_source_csv": "Import CSV",
   "bnetz_upload_csv_hint": "Telecharger des fichiers de mesure PDF ou CSV",
-  "bnetz_docker_hint": "Utilisez docker-compose.bnetz.yml pour la mesure automatisee avec l'application BNetzA officielle"
+  "bnetz_docker_hint": "Consultez le wiki pour un exemple Docker Compose avec l'application BNetzA officielle en sidecar"
 }
