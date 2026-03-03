@@ -548,6 +548,24 @@ class TestBQMCollector:
 
     @patch("app.modules.bqm.collector.random")
     @patch("app.modules.bqm.collector.time")
+    def test_spread_clamped_to_0030(self, mock_time, mock_random):
+        """Spread must never schedule collection before 00:30."""
+        mock_random.randint.return_value = 100  # 02:00 - 100min = 00:20 -> clamp 00:30
+        mock_time.strftime.side_effect = lambda fmt: {
+            "%Y-%m-%d": "2026-02-19",
+            "%H:%M": "00:25",
+        }[fmt]
+        c, *_ = self._make_collector(collect_time="02:00")
+        assert c.should_poll() is False  # 00:25 < 00:30
+
+        mock_time.strftime.side_effect = lambda fmt: {
+            "%Y-%m-%d": "2026-02-19",
+            "%H:%M": "00:30",
+        }[fmt]
+        assert c.should_poll() is True  # 00:30 >= 00:30
+
+    @patch("app.modules.bqm.collector.random")
+    @patch("app.modules.bqm.collector.time")
     def test_spread_offset_wraps_past_midnight(self, mock_time, mock_random):
         """Spread offset should wrap correctly past midnight (01:00 - 90min = 23:30)."""
         mock_random.randint.return_value = 90  # 01:00 - 90 min = 23:30

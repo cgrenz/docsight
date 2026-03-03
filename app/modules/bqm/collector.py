@@ -40,6 +40,8 @@ class BQMCollector(Collector):
         target = self._config_mgr.get("bqm_collect_time") or "02:00"
         h, m = map(int, target.split(":"))
         total = h * 60 + m - self._spread_offset
+        if 0 <= total < 30:
+            total = 30  # never fire before 00:30
         target = f"{(total // 60) % 24:02d}:{total % 60:02d}"
         now_hm = time.strftime("%H:%M")
         return now_hm >= target
